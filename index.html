@@ -33,6 +33,7 @@
       .container {
         max-width: 100%;
         padding: 10px;
+        position: relative;
       }
 
       /* Общие элементы */
@@ -62,21 +63,6 @@
         text-align: center;
       }
 
-      .btn-primary {
-        background-color: var(--primary);
-        color: white;
-      }
-
-      .btn-success {
-        background-color: var(--success);
-        color: white;
-      }
-
-      .btn-danger {
-        background-color: var(--danger);
-        color: white;
-      }
-
       /* Экран приемки заказов */
       .reception {
         position: relative;
@@ -90,14 +76,14 @@
       .client {
         position: absolute;
         width: 50px;
-        height: 80px;
+        height: 60px;
         bottom: 0;
         left: -60px;
         transition: left 0.5s;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
         background-repeat: no-repeat;
         background-position: center bottom;
-        background-size: 40px;
+        background-size: 30px;
       }
 
       .order-info {
@@ -118,7 +104,7 @@
 
       .patience-meter {
         position: absolute;
-        top: -20px;
+        top: 40px;
         left: 0;
         width: 100%;
         height: 5px;
@@ -160,11 +146,17 @@
       }
 
       /* Склад */
+      .warehouse-container {
+        overflow-x: auto;
+        margin-bottom: 15px;
+      }
+
       .warehouse {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 5px;
-        margin-bottom: 15px;
+        width: max-content;
+        min-width: 100%;
       }
 
       .shelf {
@@ -177,6 +169,31 @@
         border-radius: 5px;
         position: relative;
         overflow: hidden;
+        min-width: 50px;
+      }
+
+      .delivery-slot {
+        height: 40px;
+        background-color: #e9f5ff;
+        border: 2px dashed var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+
+      .delivery-label {
+        position: absolute;
+        top: -20px;
+        font-size: 12px;
+        color: var(--primary);
+      }
+
+      .delivery-slot.active {
+        background-color: #d4edda;
+        border: 2px solid var(--success);
       }
 
       .package {
@@ -195,12 +212,14 @@
         position: relative;
         z-index: 2;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
       }
 
       .package.active {
         transform: scale(1.1);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         z-index: 10;
+        background-color: var(--warning);
       }
 
       /* Статистика */
@@ -226,6 +245,59 @@
         color: #666;
       }
 
+      /* Инструкция */
+      .help-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 90%;
+        max-height: 80%;
+        overflow-y: auto;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: var(--dark);
+      }
+
+      .close-btn {
+        float: right;
+        cursor: pointer;
+        font-size: 20px;
+      }
+
       /* Анимации */
       @keyframes fadeIn {
         from {
@@ -243,9 +315,28 @@
   </head>
   <body>
     <div class="container">
+      <!-- Кнопка помощи -->
+      <div class="help-btn" id="helpBtn">?</div>
+
+      <!-- Модальное окно с инструкцией -->
+      <div class="modal" id="helpModal">
+        <div class="modal-content">
+          <span class="close-btn" id="closeHelpBtn">&times;</span>
+          <div class="modal-title">Как играть</div>
+          <p>1. Клиенты приходят с заказами (номер заказа отображается над клиентом).</p>
+          <p>2. Найдите нужную коробку на складе и перетащите ее в зону выдачи.</p>
+          <p>3. Коробка подсвечивается оранжевым, когда вы ее берете.</p>
+          <p>4. Зона выдачи подсвечивается зеленым, когда коробка находится над ней.</p>
+          <p>5. Отпустите коробку в зоне выдачи, чтобы выполнить заказ.</p>
+          <p>6. Используйте ползунок для прокрутки склада влево-вправо.</p>
+          <p>7. Клиент уйдет, если вы не успеете обработать заказ вовремя.</p>
+          <p>8. Получайте очки за правильные заказы и переходите на новые уровни!</p>
+        </div>
+      </div>
+
       <!-- Экран приемки заказов -->
       <div class="panel">
-        <div class="title">📦 Прием заказов - выбери посылку со склада и нажми "принять заказ"</div>
+        <div class="title">📦 Прием заказов</div>
         <div class="reception" id="reception">
           <div class="client" id="client">
             <div class="patience-meter" id="patienceMeter">
@@ -253,6 +344,9 @@
             </div>
             <div class="order-info" id="orderInfo">Заказ: A-123</div>
           </div>
+        </div>
+        <div class="delivery-slot" id="deliverySlot">
+          <div class="delivery-label">Зона выдачи</div>
         </div>
         <div class="slider-container">
           <input
@@ -264,14 +358,15 @@
             id="movementSlider"
           />
         </div>
-        <button class="btn btn-success" id="acceptBtn">Принять заказ</button>
       </div>
 
       <!-- Склад -->
       <div class="panel">
         <div class="title">🏭 Склад</div>
-        <div class="warehouse" id="warehouse">
-          <!-- Ячейки склада будут заполнены через JS -->
+        <div class="warehouse-container">
+          <div class="warehouse" id="warehouse">
+            <!-- Ячейки склада будут заполнены через JS -->
+          </div>
         </div>
         <div class="stats">
           <div class="stat-item">
@@ -304,28 +399,30 @@
       let orders = [];
       let currentOrder = null;
       let draggedPackage = null;
+      let isOverDeliverySlot = false;
+      let warehouseColumns = 5; // Начальное количество колонок
+      let warehouseRows = 5;    // Начальное количество строк
 
       // DOM элементы
       const receptionEl = document.getElementById("reception");
       const clientEl = document.getElementById("client");
       const orderInfoEl = document.getElementById("orderInfo");
       const movementSlider = document.getElementById("movementSlider");
-      const acceptBtn = document.getElementById("acceptBtn");
       const warehouseEl = document.getElementById("warehouse");
       const scoreEl = document.getElementById("score");
       const timeEl = document.getElementById("time");
       const levelEl = document.getElementById("level");
+      const helpBtn = document.getElementById("helpBtn");
+      const helpModal = document.getElementById("helpModal");
+      const closeHelpBtn = document.getElementById("closeHelpBtn");
+      const deliverySlot = document.getElementById("deliverySlot");
+      const patienceMeter = document.getElementById("patienceMeter");
+      const patienceProgress = document.getElementById("patienceProgress");
 
       // Инициализация игры
       function initGame() {
-        // Создаем склад 5x5
-        warehouseEl.innerHTML = "";
-        for (let i = 0; i < 25; i++) {
-          const shelf = document.createElement("div");
-          shelf.className = "shelf";
-          shelf.dataset.index = i;
-          warehouseEl.appendChild(shelf);
-        }
+        // Создаем склад
+        createWarehouse();
 
         // Генерируем начальные заказы
         generateOrders();
@@ -335,32 +432,83 @@
 
         // Начинаем игру
         startGame();
+
+        // Настройка кнопки помощи
+        helpBtn.addEventListener("click", () => {
+          helpModal.style.display = "flex";
+        });
+
+        closeHelpBtn.addEventListener("click", () => {
+          helpModal.style.display = "none";
+        });
+
+        helpModal.addEventListener("click", (e) => {
+          if (e.target === helpModal) {
+            helpModal.style.display = "none";
+          }
+        });
+      }
+
+      // Создание склада
+      function createWarehouse() {
+        warehouseEl.innerHTML = "";
+        warehouseEl.style.gridTemplateColumns = `repeat(${warehouseColumns}, 1fr)`;
+        
+        for (let i = 0; i < warehouseColumns * warehouseRows; i++) {
+          const shelf = document.createElement("div");
+          shelf.className = "shelf";
+          shelf.dataset.index = i;
+          warehouseEl.appendChild(shelf);
+        }
+      }
+
+      // Увеличение склада при повышении уровня
+      function expandWarehouse() {
+        // Увеличиваем размер склада каждые 2 уровня
+        if (level % 2 === 0) {
+          warehouseColumns = Math.min(10, warehouseColumns + 1); // Максимум 10 колонок
+          warehouseRows = Math.min(10, warehouseRows + 1);      // Максимум 10 строк
+          createWarehouse();
+        }
       }
 
       let patienceTimer;
       let patienceTime = 15; // Время ожидания клиента в секундах
       let currentPatience = patienceTime;
 
-      // Обновляем функцию startClientCycle
       function startClientCycle() {
         if (!gameActive) return;
 
         // Сбрасываем таймер ожидания
         currentPatience = patienceTime;
-        const patienceMeter = document.getElementById("patienceMeter");
-        const patienceProgress = document.getElementById("patienceProgress");
-
-        // Показываем клиента
-        clientEl.style.left = "10px";
-        orderInfoEl.style.opacity = "0";
         patienceMeter.style.display = "block";
         patienceProgress.style.width = "100%";
         patienceProgress.style.backgroundColor = "#5cb85c";
 
-        // Выбираем случайный заказ
-        const randomOrder = orders[Math.floor(Math.random() * orders.length)];
+        // Выбираем случайный заказ из существующих коробок
+        if (orders.length === 0) {
+          // Если нет заказов, генерируем новые
+          generateOrders();
+        }
+        
+        const activeOrders = orders.filter(order => 
+          document.querySelector(`.package[data-order-id="${order.id}"]`)
+        );
+        
+        if (activeOrders.length === 0) {
+          // Если все заказы выполнены, генерируем новые
+          generateOrders();
+          setTimeout(startClientCycle, 1000);
+          return;
+        }
+
+        const randomOrder = activeOrders[Math.floor(Math.random() * activeOrders.length)];
         currentOrder = randomOrder;
         orderInfoEl.textContent = `Заказ: ${randomOrder.id}`;
+
+        // Показываем клиента
+        clientEl.style.left = "10px";
+        orderInfoEl.style.opacity = "0";
 
         // Анимация появления информации о заказе
         setTimeout(() => {
@@ -393,9 +541,7 @@
         }, 1000);
       }
 
-      // Функция для ухода клиента
       function clientLeft() {
-        const patienceMeter = document.getElementById("patienceMeter");
         patienceMeter.style.display = "none";
         clientEl.style.left = "-60px";
         orderInfoEl.style.opacity = "0";
@@ -404,65 +550,69 @@
         setTimeout(startClientCycle, 1000 + Math.random() * 2000);
       }
 
-      // Обновляем функцию обработки принятия заказа
-      acceptBtn.addEventListener("click", () => {
-        if (!gameActive || !currentOrder || currentPatience <= 0) return;
-
-        // Останавливаем таймер ожидания
-        clearInterval(patienceTimer);
-        document.getElementById("patienceMeter").style.display = "none";
-
-        // Проверяем, правильно ли расположен заказ
-        const order = orders.find((o) => o.id === currentOrder.id);
-        if (order && order.position < 5) {
-          // Первые 5 ячеек - зона выдачи
-          // Бонус за скорость
-          const speedBonus = Math.floor((currentPatience / patienceTime) * 5);
-          score += (10 + speedBonus) * level;
-          scoreEl.textContent = score;
-
-          // Увеличиваем уровень каждые 50 очков
-          if (score >= level * 50) {
-            level++;
-            levelEl.textContent = level;
-
-            // Увеличиваем сложность
-            timeLeft += 10;
-            timeEl.textContent = timeLeft;
-
-            // Добавляем новые заказы
-            generateOrders();
-          }
-        } else {
-          // Неправильно - штраф
-          score = Math.max(0, score - 5);
-          scoreEl.textContent = score;
+      function handleSuccessfulDelivery(order) {
+        // Удаляем выполненный заказ
+        orders = orders.filter(o => o.id !== order.id);
+        
+        // Находим и удаляем коробку
+        const packageEl = document.querySelector(`.package[data-order-id="${order.id}"]`);
+        if (packageEl && packageEl.parentNode) {
+          packageEl.parentNode.removeChild(packageEl);
         }
 
-        // Убираем клиента
-        clientLeft();
-      });
+        // Начисляем очки
+        const speedBonus = Math.floor((currentPatience / patienceTime) * 5);
+        score += (10 + speedBonus) * level;
+        scoreEl.textContent = score;
 
-      // Генерация заказов
-      function generateOrders() {
-        orders = [];
-        const orderCount = 5 + level * 2;
+        // Проверяем уровень
+        if (score >= level * 50) {
+          level++;
+          levelEl.textContent = level;
+          
+          // Увеличиваем время
+          timeLeft += 10;
+          timeEl.textContent = timeLeft;
+          
+          // Расширяем склад
+          expandWarehouse();
+          
+          // Добавляем новые заказы (но не слишком много)
+          if (level % 2 === 0) {
+            generateOrders(Math.floor(level / 2) + 2);
+          }
+        }
+      }
 
-        for (let i = 0; i < orderCount; i++) {
-          const letter = String.fromCharCode(
-            65 + Math.floor(Math.random() * 5)
-          );
+      // Генерация заказов (количество зависит от уровня)
+      function generateOrders(count = null) {
+        if (!count) {
+          count = Math.min(5 + Math.floor(level / 2), 10); // Максимум 10 коробок
+        }
+        
+        // Сохраняем выполненные заказы (не в зоне выдачи)
+        orders = orders.filter(order => {
+          const packageEl = document.querySelector(`.package[data-order-id="${order.id}"]`);
+          return packageEl && parseInt(packageEl.parentElement.dataset.index) >= 5;
+        });
+
+        for (let i = 0; i < count; i++) {
+          const letter = String.fromCharCode(65 + Math.floor(Math.random() * 5));
           const number = Math.floor(100 + Math.random() * 900);
           const orderId = `${letter}-${number}`;
 
-          // Случайная позиция на складе
-          const position = Math.floor(Math.random() * 25);
+          // Случайная позиция на складе (исключая зону выдачи - первые 5 ячеек)
+          const position = Math.floor(5 + Math.random() * (warehouseColumns * warehouseRows - 5));
 
-          orders.push({
-            id: orderId,
-            position: position,
-            element: null,
-          });
+          // Проверяем, нет ли уже коробки на этой позиции
+          const shelf = document.querySelector(`.shelf[data-index="${position}"]`);
+          if (shelf && !shelf.querySelector(".package")) {
+            orders.push({
+              id: orderId,
+              position: position,
+              element: null,
+            });
+          }
         }
 
         // Размещаем заказы на складе
@@ -473,18 +623,20 @@
       function placeOrdersOnWarehouse() {
         const shelves = document.querySelectorAll(".shelf");
 
-        // Очищаем предыдущие заказы
-        shelves.forEach((shelf) => {
-          const existingPackage = shelf.querySelector(".package");
-          if (existingPackage) {
-            shelf.removeChild(existingPackage);
+        // Очищаем предыдущие заказы (кроме тех, что в зоне выдачи)
+        shelves.forEach((shelf, index) => {
+          if (index >= 5) { // Очищаем только не зону выдачи
+            const existingPackage = shelf.querySelector(".package");
+            if (existingPackage) {
+              shelf.removeChild(existingPackage);
+            }
           }
         });
 
         // Размещаем новые заказы
         orders.forEach((order) => {
-          const shelf = shelves[order.position];
-          if (shelf) {
+          const shelf = document.querySelector(`.shelf[data-index="${order.position}"]`);
+          if (shelf && !shelf.querySelector(".package")) {
             const packageEl = document.createElement("div");
             packageEl.className = "package";
             packageEl.textContent = order.id;
@@ -508,6 +660,17 @@
 
         document.addEventListener("mouseup", endDrag);
         document.addEventListener("touchend", endDrag);
+
+        deliverySlot.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          isOverDeliverySlot = true;
+          deliverySlot.classList.add("active");
+        });
+
+        deliverySlot.addEventListener("dragleave", () => {
+          isOverDeliverySlot = false;
+          deliverySlot.classList.remove("active");
+        });
 
         function startDrag(e) {
           if (!gameActive) return;
@@ -549,6 +712,28 @@
           } else {
             updatePackagePosition(e);
           }
+
+          // Проверяем, находится ли пакет над зоной выдачи
+          const rect = deliverySlot.getBoundingClientRect();
+          const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+          const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+          
+          if (
+            clientX >= rect.left &&
+            clientX <= rect.right &&
+            clientY >= rect.top &&
+            clientY <= rect.bottom
+          ) {
+            if (!isOverDeliverySlot) {
+              isOverDeliverySlot = true;
+              deliverySlot.classList.add("active");
+            }
+          } else {
+            if (isOverDeliverySlot) {
+              isOverDeliverySlot = false;
+              deliverySlot.classList.remove("active");
+            }
+          }
         }
 
         function updatePackagePosition(e) {
@@ -575,118 +760,44 @@
             clientY = e.clientY;
           }
 
-          // Находим полку, над которой отпустили пакет
-          const shelves = document.querySelectorAll(".shelf");
-          let targetShelf = null;
-
-          shelves.forEach((shelf) => {
-            const rect = shelf.getBoundingClientRect();
-            if (
-              clientX >= rect.left &&
-              clientX <= rect.right &&
-              clientY >= rect.top &&
-              clientY <= rect.bottom
-            ) {
-              targetShelf = shelf;
-            }
-          });
-
-          if (targetShelf) {
-            const targetIndex = parseInt(targetShelf.dataset.index);
+          // Проверяем, находится ли пакет над зоной выдачи
+          const rect = deliverySlot.getBoundingClientRect();
+          if (
+            clientX >= rect.left &&
+            clientX <= rect.right &&
+            clientY >= rect.top &&
+            clientY <= rect.bottom
+          ) {
+            // Проверяем, совпадает ли заказ с текущим
             const orderId = draggedPackage.dataset.orderId;
-            const order = orders.find((o) => o.id === orderId);
-
-            if (order) {
-              // Проверяем, есть ли уже пакет на целевой полке
-              const existingPackage = targetShelf.querySelector(".package");
-
-              if (existingPackage) {
-                // Меняем местами пакеты
-                const existingOrderId = existingPackage.dataset.orderId;
-                const existingOrder = orders.find(
-                  (o) => o.id === existingOrderId
-                );
-
-                if (existingOrder) {
-                  existingOrder.position = startShelfIndex;
-                  placeOrdersOnWarehouse();
-                }
+            if (currentOrder && orderId === currentOrder.id) {
+              // Успешная доставка
+              const order = orders.find(o => o.id === orderId);
+              if (order) {
+                handleSuccessfulDelivery(order);
+                clientLeft();
               }
-
-              // Обновляем позицию текущего заказа
-              order.position = targetIndex;
-              placeOrdersOnWarehouse();
+            } else {
+              // Неправильный заказ - штраф
+              score = Math.max(0, score - 5);
+              scoreEl.textContent = score;
             }
-          } else {
-            // Возвращаем пакет на исходную позицию
-            placeOrdersOnWarehouse();
           }
 
+          // Возвращаем пакет на исходную позицию
+          placeOrdersOnWarehouse();
+
+          // Сбрасываем состояние
           draggedPackage.classList.remove("active");
           draggedPackage.style.position = "";
           draggedPackage.style.zIndex = "";
           draggedPackage.style.left = "";
           draggedPackage.style.top = "";
           draggedPackage = null;
+          isOverDeliverySlot = false;
+          deliverySlot.classList.remove("active");
         }
       }
-
-      // Логика клиентов и заказов
-      function startClientCycle() {
-        if (!gameActive) return;
-
-        // Показываем клиента
-        clientEl.style.left = "10px";
-        orderInfoEl.style.opacity = "0";
-
-        // Выбираем случайный заказ
-        const randomOrder = orders[Math.floor(Math.random() * orders.length)];
-        currentOrder = randomOrder;
-        orderInfoEl.textContent = `Заказ: ${randomOrder.id}`;
-
-        // Анимация появления информации о заказе
-        setTimeout(() => {
-          orderInfoEl.style.opacity = "1";
-        }, 500);
-      }
-
-      // Обработка принятия заказа
-      acceptBtn.addEventListener("click", () => {
-        if (!gameActive || !currentOrder) return;
-
-        // Проверяем, правильно ли расположен заказ
-        const order = orders.find((o) => o.id === currentOrder.id);
-        if (order && order.position < 5) {
-          // Первые 5 ячеек - зона выдачи
-          // Правильно - начисляем очки
-          score += 10 * level;
-          scoreEl.textContent = score;
-
-          // Увеличиваем уровень каждые 50 очков
-          if (score >= level * 50) {
-            level++;
-            levelEl.textContent = level;
-
-            // Увеличиваем сложность
-            timeLeft += 10;
-            timeEl.textContent = timeLeft;
-
-            // Добавляем новые заказы
-            generateOrders();
-          }
-        } else {
-          // Неправильно - штраф
-          score = Math.max(0, score - 5);
-          scoreEl.textContent = score;
-        }
-
-        // Убираем клиента
-        clientEl.style.left = "-60px";
-        orderInfoEl.style.opacity = "0";
-
-        // Новый клиент через 1-3 секунды
-        setTimeout(startClientCycle, 1000 + Math.random() * 2000);
-      });
 
       // Управление движением
       movementSlider.addEventListener("input", (e) => {
@@ -710,6 +821,8 @@
         score = 0;
         timeLeft = 60;
         level = 1;
+        warehouseColumns = 5;
+        warehouseRows = 5;
 
         scoreEl.textContent = score;
         timeEl.textContent = timeLeft;
