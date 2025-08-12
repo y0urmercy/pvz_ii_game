@@ -36,7 +36,6 @@
         position: relative;
       }
 
-      /* Общие элементы */
       .panel {
         background-color: white;
         border-radius: 10px;
@@ -52,66 +51,113 @@
         color: var(--dark);
       }
 
-      .btn {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius: 5px;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-      }
-
       /* Экран приемки заказов */
       .reception {
         position: relative;
-        height: 150px;
+        height: 180px;
+        width: 100%; /* Добавляем явное указание ширины */
+        min-width: 800px; /* Минимальная ширина для 5 клиентов */
         background-color: #e9f5ff;
         border-radius: 10px;
-        overflow: hidden;
+        overflow-x: auto; /* Добавляем горизонтальную прокрутку если нужно */
+        overflow-y: hidden;
         margin-bottom: 15px;
       }
 
-      .client {
-        position: absolute;
-        width: 50px;
-        height: 90px;
-        bottom: 0;
-        left: -60px;
-        transition: left 0.5s;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
-        background-repeat: no-repeat;
-        background-position: center bottom;
-        background-size: 30px;
+      .client-queue {
+        position: relative;
+        height: 100%;
+        width: 100%;
       }
 
-      .order-info {
+      .client-container {
         position: absolute;
-        top: -40px;
-        left: 70%;
-        transform: translateX(-50%);
-        background-color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        opacity: 0;
-        transition: opacity 0.3s;
-        white-space: nowrap;
-        z-index: 1;
+        bottom: 0;
+        width: 70px;
+        margin-right: 10px;
+        height: 120px;
+      }
+
+      @media (max-width: 768px) {
+        .reception {
+          min-width: 500px;
+        }
+        .client-container {
+          width: 60px;
+        }
       }
 
       .patience-meter {
         position: absolute;
-        top: 75px;
-        left: 0;
-        width: 100%;
+        top: 0;
+        left: 15px;
+        width: 50px;
         height: 5px;
         background-color: #e0e0e0;
         border-radius: 3px;
         overflow: hidden;
-        display: none;
+      }
+
+      .client {
+        position: absolute;
+        bottom: 0;
+        width: 50px;
+        height: 90px;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        background-size: 40px;
+        transition: all 0.5s;
+      }
+
+      .order-info {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-size: 11px;
+        white-space: nowrap;
+        z-index: 1;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .client.neutral {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
+      }
+
+      .client.happy {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/><circle cx="8.5" cy="10.5" r="1.5"/><circle cx="15.5" cy="10.5" r="1.5"/></svg>');
+        animation: happyJump 0.5s;
+      }
+
+      .client.angry {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="8.5" cy="10.5" r="1.5"/><circle cx="15.5" cy="10.5" r="1.5"/><path d="M12 17c2.28 0 4.22-1.66 5-4H7c.78 2.34 2.72 4 5 4z"/></svg>');
+        animation: shake 0.5s;
+      }
+
+      @keyframes happyJump {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
       }
 
       .patience-progress {
@@ -119,30 +165,6 @@
         background-color: #5cb85c;
         width: 100%;
         transition: width 1s linear;
-      }
-
-      /* Ползунок управления */
-      .slider-container {
-        padding: 10px 0;
-      }
-
-      .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 10px;
-        border-radius: 5px;
-        background: #d3d3d3;
-        outline: none;
-      }
-
-      .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: var(--primary);
-        cursor: pointer;
       }
 
       /* Склад */
@@ -199,7 +221,8 @@
       .package {
         width: 80%;
         height: 80%;
-        background-color: var(--secondary);
+        background-size: cover;
+        background-position: center;
         border-radius: 3px;
         display: flex;
         align-items: center;
@@ -213,6 +236,20 @@
         z-index: 2;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .package.beige {
+        background-color: #f5e6d3;
+      }
+      .package.brown {
+        background-color: #8b4513;
+      }
+      .package.gray {
+        background-color: #a9a9a9;
+      }
+      .package.purple {
+        background-color: #9370db;
       }
 
       .package.active {
@@ -227,6 +264,12 @@
         display: flex;
         justify-content: space-between;
         margin-bottom: 15px;
+        position: sticky;
+        top: 0;
+        background-color: #f5f5f5;
+        padding: 10px;
+        z-index: 50;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
 
       .stat-item {
@@ -297,24 +340,24 @@
         cursor: pointer;
         font-size: 20px;
       }
-
-      /* Анимации */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      .fade-in {
-        animation: fadeIn 0.5s forwards;
-      }
     </style>
   </head>
   <body>
     <div class="container">
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="score">0</div>
+          <div class="stat-label">Очки</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="time">60</div>
+          <div class="stat-label">Секунд</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="level">1</div>
+          <div class="stat-label">Уровень</div>
+        </div>
+      </div>
       <!-- Кнопка помощи -->
       <div class="help-btn" id="helpBtn">?</div>
 
@@ -323,14 +366,23 @@
         <div class="modal-content">
           <span class="close-btn" id="closeHelpBtn">&times;</span>
           <div class="modal-title">Как играть</div>
-          <p>1. Клиенты приходят с заказами (номер заказа отображается над клиентом).</p>
-          <p>2. Найдите нужную коробку на складе и перетащите ее в зону выдачи.</p>
+          <p>
+            1. Клиенты приходят с заказами (номер заказа отображается над
+            клиентом).
+          </p>
+          <p>
+            2. Найдите нужную коробку на складе и перетащите ее в зону выдачи.
+          </p>
           <p>3. Коробка подсвечивается оранжевым, когда вы ее берете.</p>
-          <p>4. Зона выдачи подсвечивается зеленым, когда коробка находится над ней.</p>
+          <p>
+            4. Зона выдачи подсвечивается зеленым, когда коробка находится над
+            ней.
+          </p>
           <p>5. Отпустите коробку в зоне выдачи, чтобы выполнить заказ.</p>
-          <p>6. Используйте ползунок для прокрутки склада влево-вправо.</p>
-          <p>7. Клиент уйдет, если вы не успеете обработать заказ вовремя.</p>
-          <p>8. Получайте очки за правильные заказы и переходите на новые уровни!</p>
+          <p>6. Клиент уйдет, если вы не успеете обработать заказ вовремя.</p>
+          <p>
+            7. Получайте очки за правильные заказы и переходите на новые уровни!
+          </p>
         </div>
       </div>
 
@@ -338,25 +390,14 @@
       <div class="panel">
         <div class="title">📦 Прием заказов</div>
         <div class="reception" id="reception">
-          <div class="client" id="client">
+          <div class="client-queue" id="clientQueue">
             <div class="patience-meter" id="patienceMeter">
               <div class="patience-progress" id="patienceProgress"></div>
             </div>
-            <div class="order-info" id="orderInfo">Заказ: A-123</div>
           </div>
         </div>
         <div class="delivery-slot" id="deliverySlot">
           <div class="delivery-label">Зона выдачи</div>
-        </div>
-        <div class="slider-container">
-          <input
-            type="range"
-            min="-100"
-            max="100"
-            value="0"
-            class="slider"
-            id="movementSlider"
-          />
         </div>
       </div>
 
@@ -364,23 +405,7 @@
       <div class="panel">
         <div class="title">🏭 Склад</div>
         <div class="warehouse-container">
-          <div class="warehouse" id="warehouse">
-            <!-- Ячейки склада будут заполнены через JS -->
-          </div>
-        </div>
-        <div class="stats">
-          <div class="stat-item">
-            <div class="stat-value" id="score">0</div>
-            <div class="stat-label">Очки</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value" id="time">60</div>
-            <div class="stat-label">Секунд</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value" id="level">1</div>
-            <div class="stat-label">Уровень</div>
-          </div>
+          <div class="warehouse" id="warehouse"></div>
         </div>
       </div>
     </div>
@@ -397,17 +422,19 @@
       let gameActive = false;
       let timer;
       let orders = [];
-      let currentOrder = null;
       let draggedPackage = null;
       let isOverDeliverySlot = false;
-      let warehouseColumns = 5; // Начальное количество колонок
-      let warehouseRows = 5;    // Начальное количество строк
+      let warehouseColumns = 5;
+      let warehouseRows = 5;
+      let clientQueue = [];
+      const maxQueueLength = 5;
+      const clientSpawnChance = 0.5;
+      const minSpawnDelay = 1000;
+      const maxSpawnDelay = 1500;
+      let patienceTimer;
+      const patienceTime = 15;
 
       // DOM элементы
-      const receptionEl = document.getElementById("reception");
-      const clientEl = document.getElementById("client");
-      const orderInfoEl = document.getElementById("orderInfo");
-      const movementSlider = document.getElementById("movementSlider");
       const warehouseEl = document.getElementById("warehouse");
       const scoreEl = document.getElementById("score");
       const timeEl = document.getElementById("time");
@@ -418,34 +445,25 @@
       const deliverySlot = document.getElementById("deliverySlot");
       const patienceMeter = document.getElementById("patienceMeter");
       const patienceProgress = document.getElementById("patienceProgress");
+      const clientQueueEl = document.getElementById("clientQueue");
 
       // Инициализация игры
       function initGame() {
-        // Создаем склад
         createWarehouse();
-
-        // Генерируем начальные заказы
         generateOrders();
-
-        // Настройка drag and drop
         setupDragAndDrop();
-
-        // Начинаем игру
         startGame();
 
-        // Настройка кнопки помощи
-        helpBtn.addEventListener("click", () => {
-          helpModal.style.display = "flex";
-        });
-
-        closeHelpBtn.addEventListener("click", () => {
-          helpModal.style.display = "none";
-        });
-
+        helpBtn.addEventListener(
+          "click",
+          () => (helpModal.style.display = "flex")
+        );
+        closeHelpBtn.addEventListener(
+          "click",
+          () => (helpModal.style.display = "none")
+        );
         helpModal.addEventListener("click", (e) => {
-          if (e.target === helpModal) {
-            helpModal.style.display = "none";
-          }
+          if (e.target === helpModal) helpModal.style.display = "none";
         });
       }
 
@@ -453,7 +471,7 @@
       function createWarehouse() {
         warehouseEl.innerHTML = "";
         warehouseEl.style.gridTemplateColumns = `repeat(${warehouseColumns}, 1fr)`;
-        
+
         for (let i = 0; i < warehouseColumns * warehouseRows; i++) {
           const shelf = document.createElement("div");
           shelf.className = "shelf";
@@ -462,152 +480,51 @@
         }
       }
 
-      // Увеличение склада при повышении уровня
+      // Увеличение склада
       function expandWarehouse() {
-        // Увеличиваем размер склада каждые 2 уровня
         if (level % 2 === 0) {
-          warehouseColumns = Math.min(10, warehouseColumns + 1); // Максимум 10 колонок
-          warehouseRows = Math.min(10, warehouseRows + 1);      // Максимум 10 строк
+          warehouseColumns = Math.min(10, warehouseColumns + 1);
+          warehouseRows = Math.min(10, warehouseRows + 1);
           createWarehouse();
         }
       }
 
-      let patienceTimer;
-      let patienceTime = 15; // Время ожидания клиента в секундах
-      let currentPatience = patienceTime;
+      // Генерация заказов
+      function generateOrders(count = null) {
+        if (!count) count = Math.min(5 + Math.floor(level / 2), 10);
 
-      function startClientCycle() {
-        if (!gameActive) return;
-
-        // Сбрасываем таймер ожидания
-        currentPatience = patienceTime;
-        patienceMeter.style.display = "block";
-        patienceProgress.style.width = "100%";
-        patienceProgress.style.backgroundColor = "#5cb85c";
-
-        // Выбираем случайный заказ из существующих коробок
-        if (orders.length === 0) {
-          // Если нет заказов, генерируем новые
-          generateOrders();
-        }
-        
-        const activeOrders = orders.filter(order => 
+        // Сначала очистим несуществующие заказы
+        orders = orders.filter((order) =>
           document.querySelector(`.package[data-order-id="${order.id}"]`)
         );
-        
-        if (activeOrders.length === 0) {
-          // Если все заказы выполнены, генерируем новые
-          generateOrders();
-          setTimeout(startClientCycle, 1000);
-          return;
-        }
 
-        const randomOrder = activeOrders[Math.floor(Math.random() * activeOrders.length)];
-        currentOrder = randomOrder;
-        orderInfoEl.textContent = `Заказ: ${randomOrder.id}`;
-
-        // Показываем клиента
-        clientEl.style.left = "10px";
-        orderInfoEl.style.opacity = "0";
-
-        // Анимация появления информации о заказе
-        setTimeout(() => {
-          orderInfoEl.style.opacity = "1";
-        }, 500);
-
-        // Запускаем таймер ожидания клиента
-        clearInterval(patienceTimer);
-        patienceTimer = setInterval(() => {
-          currentPatience--;
-          const percent = (currentPatience / patienceTime) * 100;
-          patienceProgress.style.width = `${percent}%`;
-
-          // Меняем цвет при уменьшении терпения
-          if (percent < 30) {
-            patienceProgress.style.backgroundColor = "#d9534f";
-          } else if (percent < 60) {
-            patienceProgress.style.backgroundColor = "#f0ad4e";
+        // Создаем массив доступных позиций на складе
+        const availablePositions = [];
+        const shelves = document.querySelectorAll(".shelf");
+        shelves.forEach((shelf, index) => {
+          if (index >= 5 && !shelf.querySelector(".package")) {
+            availablePositions.push(index);
           }
-
-          if (currentPatience <= 0) {
-            // Клиент ушел
-            clearInterval(patienceTimer);
-            clientLeft();
-
-            // Штраф за необслуженного клиента
-            score = Math.max(0, score - 10);
-            scoreEl.textContent = score;
-          }
-        }, 1000);
-      }
-
-      function clientLeft() {
-        patienceMeter.style.display = "none";
-        clientEl.style.left = "-60px";
-        orderInfoEl.style.opacity = "0";
-
-        // Новый клиент через 1-3 секунды
-        setTimeout(startClientCycle, 1000 + Math.random() * 2000);
-      }
-
-      function handleSuccessfulDelivery(order) {
-        // Удаляем выполненный заказ
-        orders = orders.filter(o => o.id !== order.id);
-        
-        // Находим и удаляем коробку
-        const packageEl = document.querySelector(`.package[data-order-id="${order.id}"]`);
-        if (packageEl && packageEl.parentNode) {
-          packageEl.parentNode.removeChild(packageEl);
-        }
-
-        // Начисляем очки
-        const speedBonus = Math.floor((currentPatience / patienceTime) * 5);
-        score += (10 + speedBonus) * level;
-        scoreEl.textContent = score;
-
-        // Проверяем уровень
-        if (score >= level * 50) {
-          level++;
-          levelEl.textContent = level;
-          
-          // Увеличиваем время
-          timeLeft += 10;
-          timeEl.textContent = timeLeft;
-          
-          // Расширяем склад
-          expandWarehouse();
-          
-          // Добавляем новые заказы (но не слишком много)
-          if (level % 2 === 0) {
-            generateOrders(Math.floor(level / 2) + 2);
-          }
-        }
-      }
-
-      // Генерация заказов (количество зависит от уровня)
-      function generateOrders(count = null) {
-        if (!count) {
-          count = Math.min(5 + Math.floor(level / 2), 10); // Максимум 10 коробок
-        }
-        
-        // Сохраняем выполненные заказы (не в зоне выдачи)
-        orders = orders.filter(order => {
-          const packageEl = document.querySelector(`.package[data-order-id="${order.id}"]`);
-          return packageEl && parseInt(packageEl.parentElement.dataset.index) >= 5;
         });
 
-        for (let i = 0; i < count; i++) {
-          const letter = String.fromCharCode(65 + Math.floor(Math.random() * 5));
+        // Генерируем новые уникальные заказы
+        const newOrders = [];
+        while (newOrders.length < count && availablePositions.length > 0) {
+          const letter = String.fromCharCode(
+            65 + Math.floor(Math.random() * 5)
+          );
           const number = Math.floor(100 + Math.random() * 900);
           const orderId = `${letter}-${number}`;
 
-          // Случайная позиция на складе (исключая зону выдачи - первые 5 ячеек)
-          const position = Math.floor(5 + Math.random() * (warehouseColumns * warehouseRows - 5));
+          // Проверяем, что такого заказа еще нет
+          if (!orders.some((o) => o.id === orderId)) {
+            const posIndex = Math.floor(
+              Math.random() * availablePositions.length
+            );
+            const position = availablePositions[posIndex];
+            availablePositions.splice(posIndex, 1);
 
-          // Проверяем, нет ли уже коробки на этой позиции
-          const shelf = document.querySelector(`.shelf[data-index="${position}"]`);
-          if (shelf && !shelf.querySelector(".package")) {
-            orders.push({
+            newOrders.push({
               id: orderId,
               position: position,
               element: null,
@@ -615,49 +532,296 @@
           }
         }
 
-        // Размещаем заказы на складе
+        orders = orders.concat(newOrders);
         placeOrdersOnWarehouse();
       }
 
+      function findAvailableShelfPosition() {
+        const shelves = document.querySelectorAll(".shelf");
+        const availablePositions = [];
+
+        shelves.forEach((shelf, index) => {
+          if (index >= 5 && !shelf.querySelector(".package")) {
+            availablePositions.push(index);
+          }
+        });
+
+        return availablePositions.length > 0
+          ? availablePositions[
+              Math.floor(Math.random() * availablePositions.length)
+            ]
+          : -1;
+      }
       // Размещение заказов на складе
       function placeOrdersOnWarehouse() {
         const shelves = document.querySelectorAll(".shelf");
 
-        // Очищаем предыдущие заказы (кроме тех, что в зоне выдачи)
         shelves.forEach((shelf, index) => {
-          if (index >= 5) { // Очищаем только не зону выдачи
+          if (index >= 5) {
             const existingPackage = shelf.querySelector(".package");
-            if (existingPackage) {
-              shelf.removeChild(existingPackage);
-            }
+            if (existingPackage) shelf.removeChild(existingPackage);
           }
         });
 
-        // Размещаем новые заказы
         orders.forEach((order) => {
-          const shelf = document.querySelector(`.shelf[data-index="${order.position}"]`);
+          const shelf = document.querySelector(
+            `.shelf[data-index="${order.position}"]`
+          );
           if (shelf && !shelf.querySelector(".package")) {
             const packageEl = document.createElement("div");
             packageEl.className = "package";
             packageEl.textContent = order.id;
             packageEl.dataset.orderId = order.id;
+
+            const colors = ["beige", "brown", "gray", "purple"];
+            packageEl.classList.add(
+              colors[Math.floor(Math.random() * colors.length)]
+            );
+
             shelf.appendChild(packageEl);
             order.element = packageEl;
           }
         });
       }
 
-      // Настройка drag and drop
+      // Управление очередью клиентов
+      function startClientCycle() {
+        if (!gameActive) return;
+
+        // Увеличиваем шанс появления новых клиентов
+        if (
+          clientQueue.length < maxQueueLength &&
+          Math.random() > 1 - clientSpawnChance
+        ) {
+          addClientToQueue();
+        }
+
+        // Уменьшаем задержку между появлениями клиентов
+        const delay =
+          clientQueue.length === 0
+            ? minSpawnDelay
+            : minSpawnDelay + Math.random() * (maxSpawnDelay - minSpawnDelay);
+
+        setTimeout(startClientCycle, delay);
+        updatePatienceForAllClients();
+      }
+      function addClientToQueue() {
+        // Получаем только заказы, которые реально есть на складе
+        const availableOrders = orders.filter((order) => {
+          const packageExists = !!document.querySelector(
+            `.package[data-order-id="${order.id}"]`
+          );
+          const alreadyInQueue = clientQueue.some(
+            (client) => client.order.id === order.id
+          );
+          return packageExists && !alreadyInQueue;
+        });
+
+        if (availableOrders.length === 0) {
+          // Если нет доступных заказов - генерируем новые
+          generateOrders();
+          setTimeout(addClientToQueue, 500);
+          return;
+        }
+
+        // Выбираем случайный доступный заказ
+        const randomOrder =
+          availableOrders[Math.floor(Math.random() * availableOrders.length)];
+
+        const client = {
+          id: Date.now(),
+          order: randomOrder,
+          patience: patienceTime,
+          element: null,
+          meter: null,
+        };
+
+        clientQueue.push(client);
+        renderClientQueue();
+
+        if (clientQueue.length === 1) {
+          startPatienceTimer();
+        }
+      }
+      function renderClientQueue() {
+        clientQueueEl.innerHTML = "";
+
+        const clientWidth = 70; // Ширина одного клиента с отступами
+        const startOffset = 20; // Начальный отступ
+
+        clientQueue.forEach((client, index) => {
+          const packageExists = !!document.querySelector(
+            `.package[data-order-id="${client.order.id}"]`
+          );
+          if (!packageExists) {
+            // Если заказ исчез - удаляем клиента
+            clientQueue.splice(index, 1);
+            return;
+          }
+          const clientContainer = document.createElement("div");
+          clientContainer.className = "client-container";
+          clientContainer.style.left = `${startOffset + index * clientWidth}px`;
+
+          // Полоска терпения
+          const patienceMeter = document.createElement("div");
+          patienceMeter.className = "patience-meter";
+          patienceMeter.innerHTML = `
+            <div class="patience-progress" 
+                 style="width:${(client.patience / patienceTime) * 100}%">
+            </div>`;
+
+          // Иконка клиента
+          const clientIcon = document.createElement("div");
+          clientIcon.className = "client neutral";
+          clientIcon.dataset.clientId = client.id;
+
+          // Информация о заказе
+          const orderInfo = document.createElement("div");
+          orderInfo.className = "order-info";
+          orderInfo.textContent = client.order.id; // Короткий ID
+
+          clientContainer.appendChild(patienceMeter);
+          clientContainer.appendChild(clientIcon);
+          clientContainer.appendChild(orderInfo);
+          clientQueueEl.appendChild(clientContainer);
+
+          client.element = clientIcon;
+          client.meter = patienceMeter.querySelector(".patience-progress");
+        });
+      }
+      function updatePatienceForAllClients() {
+        clientQueue.forEach((client, index) => {
+          if (client.meter) {
+            const percent = (client.patience / patienceTime) * 100;
+            client.meter.style.width = `${percent}%`;
+
+            if (percent < 30) {
+              client.meter.style.backgroundColor = "#d9534f";
+            } else if (percent < 60) {
+              client.meter.style.backgroundColor = "#f0ad4e";
+            } else {
+              client.meter.style.backgroundColor = "#5cb85c";
+            }
+          }
+        });
+      }
+
+      function startPatienceTimer() {
+        clearInterval(patienceTimer);
+        patienceMeter.style.display = "block";
+        patienceTimer = setInterval(() => {
+          if (clientQueue.length === 0) {
+            clearInterval(patienceTimer);
+            return;
+          }
+
+          const currentClient = clientQueue[0];
+          currentClient.patience--;
+          if (currentClient.patience <= 0) {
+            if (currentClient.element) {
+              currentClient.element.classList.remove("happy", "neutral");
+              currentClient.element.classList.add("angry");
+            }
+
+            setTimeout(() => {
+              clientQueue.shift();
+              renderClientQueue();
+
+              if (currentClient.element && currentClient.element.parentNode) {
+                currentClient.element.style.left = "-60px";
+                setTimeout(() => {
+                  if (
+                    currentClient.element &&
+                    currentClient.element.parentNode
+                  ) {
+                    currentClient.element.parentNode.removeChild(
+                      currentClient.element
+                    );
+                  }
+                }, 500);
+              }
+
+              if (clientQueue.length > 0) {
+                startPatienceTimer();
+              } else {
+                patienceMeter.style.display = "none";
+                setTimeout(startClientCycle, 1000 + Math.random() * 2000);
+              }
+            }, 500);
+          } else {
+            updatePatienceForAllClients();
+          }
+        }, 1000);
+      }
+
+      // Обработка успешной доставки
+      function handleSuccessfulDelivery(order) {
+        if (clientQueue.length === 0) return;
+
+        const currentClient = clientQueue[0];
+        orders = orders.filter((o) => o.id !== order.id);
+
+        const packageEl = document.querySelector(
+          `.package[data-order-id="${order.id}"]`
+        );
+        if (packageEl && packageEl.parentNode) {
+          packageEl.parentNode.removeChild(packageEl);
+        }
+
+        const speedBonus = Math.floor(
+          (currentClient.patience / patienceTime) * 5
+        );
+        score += (10 + speedBonus) * level;
+        scoreEl.textContent = score;
+
+        if (currentClient.element) {
+          currentClient.element.classList.add("happy");
+          // Добавляем анимацию перед удалением
+          setTimeout(() => {
+            currentClient.element.style.left = "100%"; // Плавно уходит вправо
+            setTimeout(() => {
+              if (currentClient.element && currentClient.element.parentNode) {
+                currentClient.element.parentNode.removeChild(
+                  currentClient.element
+                );
+              }
+            }, 500);
+          }, 1000); // Даем время на анимацию happy
+        }
+
+        // Удаляем клиента из очереди после анимации
+        setTimeout(() => {
+          clientQueue.shift();
+          renderClientQueue();
+
+          if (clientQueue.length > 0) {
+            startPatienceTimer();
+          } else {
+            patienceMeter.style.display = "none";
+            startClientCycle();
+          }
+        }, 1500); // Увеличили время до удаления
+
+        if (score >= level * 50) {
+          level++;
+          levelEl.textContent = level;
+          timeLeft += 10;
+          timeEl.textContent = timeLeft;
+          expandWarehouse();
+
+          if (level % 2 === 0) {
+            generateOrders(Math.floor(level / 2) + 2);
+          }
+        }
+      }
+      // Drag and Drop
       function setupDragAndDrop() {
         let startX, startY;
-        let startShelfIndex;
 
         document.addEventListener("mousedown", startDrag);
         document.addEventListener("touchstart", startDrag, { passive: false });
-
         document.addEventListener("mousemove", dragPackage);
         document.addEventListener("touchmove", dragPackage, { passive: false });
-
         document.addEventListener("mouseup", endDrag);
         document.addEventListener("touchend", endDrag);
 
@@ -689,11 +853,7 @@
           }
 
           draggedPackage = packageEl;
-          startShelfIndex = parseInt(packageEl.parentElement.dataset.index);
-
           packageEl.classList.add("active");
-
-          // Поднимаем пакет над остальными
           packageEl.style.position = "absolute";
           packageEl.style.zIndex = "1000";
           updatePackagePosition(e);
@@ -713,11 +873,12 @@
             updatePackagePosition(e);
           }
 
-          // Проверяем, находится ли пакет над зоной выдачи
           const rect = deliverySlot.getBoundingClientRect();
-          const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-          const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-          
+          const clientX =
+            e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+          const clientY =
+            e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+
           if (
             clientX >= rect.left &&
             clientX <= rect.right &&
@@ -739,7 +900,9 @@
         function updatePackagePosition(e) {
           if (!draggedPackage) return;
 
-          const rect = receptionEl.getBoundingClientRect();
+          const rect = document
+            .querySelector(".reception")
+            .getBoundingClientRect();
           const x = e.clientX - rect.left - draggedPackage.offsetWidth / 2;
           const y = e.clientY - rect.top - draggedPackage.offsetHeight / 2;
 
@@ -760,34 +923,57 @@
             clientY = e.clientY;
           }
 
-          // Проверяем, находится ли пакет над зоной выдачи
-          const rect = deliverySlot.getBoundingClientRect();
+          // Проверка зоны выдачи
+          const deliveryRect = deliverySlot.getBoundingClientRect();
           if (
-            clientX >= rect.left &&
-            clientX <= rect.right &&
-            clientY >= rect.top &&
-            clientY <= rect.bottom
+            clientX >= deliveryRect.left &&
+            clientX <= deliveryRect.right &&
+            clientY >= deliveryRect.top &&
+            clientY <= deliveryRect.bottom
           ) {
-            // Проверяем, совпадает ли заказ с текущим
             const orderId = draggedPackage.dataset.orderId;
-            if (currentOrder && orderId === currentOrder.id) {
-              // Успешная доставка
-              const order = orders.find(o => o.id === orderId);
-              if (order) {
-                handleSuccessfulDelivery(order);
-                clientLeft();
-              }
+            if (clientQueue.length > 0 && orderId === clientQueue[0].order.id) {
+              const order = orders.find((o) => o.id === orderId);
+              if (order) handleSuccessfulDelivery(order);
             } else {
-              // Неправильный заказ - штраф
               score = Math.max(0, score - 5);
               scoreEl.textContent = score;
+              if (clientQueue.length > 0 && clientQueue[0].element) {
+                clientQueue[0].element.classList.add("angry");
+                setTimeout(() => {
+                  if (clientQueue[0] && clientQueue[0].element) {
+                    clientQueue[0].element.classList.remove("angry");
+                  }
+                }, 1000);
+              }
+            }
+          } else {
+            // Проверка перемещения на другую полку
+            const shelves = document.querySelectorAll(".shelf");
+            let targetShelf = null;
+
+            shelves.forEach((shelf) => {
+              const rect = shelf.getBoundingClientRect();
+              if (
+                clientX >= rect.left &&
+                clientX <= rect.right &&
+                clientY >= rect.top &&
+                clientY <= rect.bottom &&
+                !shelf.querySelector(".package")
+              ) {
+                targetShelf = shelf;
+              }
+            });
+
+            if (targetShelf) {
+              targetShelf.appendChild(draggedPackage);
+              const orderId = draggedPackage.dataset.orderId;
+              const order = orders.find((o) => o.id === orderId);
+              if (order) order.position = parseInt(targetShelf.dataset.index);
             }
           }
 
-          // Возвращаем пакет на исходную позицию
-          placeOrdersOnWarehouse();
-
-          // Сбрасываем состояние
+          // Сброс состояния
           draggedPackage.classList.remove("active");
           draggedPackage.style.position = "";
           draggedPackage.style.zIndex = "";
@@ -799,67 +985,43 @@
         }
       }
 
-      // Управление движением
-      movementSlider.addEventListener("input", (e) => {
-        if (!gameActive) return;
-
-        const value = parseInt(e.target.value);
-        if (value > 30) {
-          // Движение вправо - к складу
-          warehouseEl.scrollLeft = Math.min(
-            warehouseEl.scrollLeft + 5,
-            warehouseEl.scrollWidth
-          );
-        } else if (value < -30) {
-          // Движение влево - к приемке
-          warehouseEl.scrollLeft = Math.max(warehouseEl.scrollLeft - 5, 0);
-        }
-      });
-
-      // Таймер игры
+      // Управление игрой
       function startGame() {
         score = 0;
         timeLeft = 60;
         level = 1;
         warehouseColumns = 5;
         warehouseRows = 5;
+        clientQueue = [];
+        orders = [];
 
         scoreEl.textContent = score;
         timeEl.textContent = timeLeft;
         levelEl.textContent = level;
-
         gameActive = true;
 
-        // Запускаем таймер
         clearInterval(timer);
         timer = setInterval(() => {
           timeLeft--;
           timeEl.textContent = timeLeft;
 
-          if (timeLeft <= 0) {
-            endGame();
-          }
+          if (timeLeft <= 0) endGame();
         }, 1000);
 
-        // Начинаем цикл клиентов
         startClientCycle();
       }
 
       function endGame() {
         gameActive = false;
         clearInterval(timer);
-
-        // Показываем результаты
         alert(`Игра окончена! Ваш счет: ${score}`);
 
-        // Можно отправить результаты в Telegram
         if (Telegram.WebApp.initDataUnsafe?.user) {
           const userId = Telegram.WebApp.initDataUnsafe.user.id;
-          // Здесь можно отправить счет на сервер
+          // Отправка результатов на сервер
         }
       }
 
-      // Запуск игры при загрузке
       window.addEventListener("load", initGame);
     </script>
   </body>
